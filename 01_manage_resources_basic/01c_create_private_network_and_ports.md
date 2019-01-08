@@ -259,3 +259,5 @@ The new port should appear as `DOWN` in the list returned by `openstack port lis
 To finish this workshop, complete the following:
 - :exclamation: **Task 4**: Attach the new port to `mythirdvm`, bring it up via DHCP and test the connectivity to the other instances.
 - :exclamation: **Task 5**: Can you come up with scenarios where moving a port from a VM to another is essential?
+
+You finished the first workshop, you can now move on the [advanced resource management workshop](../02_manage_resources_advanced/02a_snapshots.md)

@@ -2,10 +2,14 @@ This is a collection of workshops to learn how to use OpenStack on OVH Public Cl
 
 The workshops are organized as follows:
 1. **Basic resource management**: simple manipulation of resources
-  - [**01a**](01_manage_resources_basic/01a_boot_instances.md): List flavors, images, create a keypair and boot an instance
-  - [**01b**](01_manage_resources_basic/01b_create_volumes.md): Create, attach and detach volumes
-  - [**01c**](01_manage_resources_basic/01c_create_private_network_and_ports.md): Create networks, subnets and ports, attach and detach ports to/from instances
+    - [**01a**](01_manage_resources_basic/01a_boot_instances.md): List flavors, images, create a keypair and boot an instance
+    - [**01b**](01_manage_resources_basic/01b_create_volumes.md): Create, attach and detach volumes
+    - [**01c**](01_manage_resources_basic/01c_create_private_network_and_ports.md): Create networks, subnets and ports, attach and detach ports to/from instances
 
+2. **Advanced resource management**: more complex manipulation of resources
+    - [**02a**](02_manage_resources_advanced/02a_snapshots.md): Create and restore snapshosts of instances and volumes
+    - [**02b**](02_manage_resources_advanced/02b_delete_stop_reboot_instances.md): 50 shades of disruption
+    - [**02c**](02_manage_resources_advanced/02c_security_groups.md): Manage the firewall rules on the public network
 
 # Prerequisites
 ## For guided labs
