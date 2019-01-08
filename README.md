@@ -1,15 +1,26 @@
-This is a collection of workshops to learn how to use OpenStack on OVH Public Cloud (although it can be adapted easily to different cloud provider using OpenStack).
+This is a collection of workshops to learn how to use OpenStack on OVH Public Cloud (although it
+can be adapted easily to different cloud provider using OpenStack).
 
 The workshops are organized as follows:
 1. **Basic resource management**: simple manipulation of resources
-    - [**01a**](01_manage_resources_basic/01a_boot_instances.md): List flavors, images, create a keypair and boot an instance
+    - [**01a**](01_manage_resources_basic/01a_boot_instances.md): List flavors, images, create a
+      keypair and boot an instance
     - [**01b**](01_manage_resources_basic/01b_create_volumes.md): Create, attach and detach volumes
-    - [**01c**](01_manage_resources_basic/01c_create_private_network_and_ports.md): Create networks, subnets and ports, attach and detach ports to/from instances
+    - [**01c**](01_manage_resources_basic/01c_create_private_network_and_ports.md): Create networks,
+      subnets and ports, attach and detach ports to/from instances
 
 2. **Advanced resource management**: more complex manipulation of resources
-    - [**02a**](02_manage_resources_advanced/02a_snapshots.md): Create and restore snapshosts of instances and volumes
-    - [**02b**](02_manage_resources_advanced/02b_delete_stop_reboot_instances.md): 50 shades of disruption
-    - [**02c**](02_manage_resources_advanced/02c_security_groups.md): Manage the firewall rules on the public network
+    - [**02a**](02_manage_resources_advanced/02a_snapshots.md): Create and restore snapshosts of
+      instances and volumes
+    - [**02b**](02_manage_resources_advanced/02b_stop_pause_delete_instances.md): 50 shades of
+      disruption
+    - [**02c**](02_manage_resources_advanced/02c_security_groups.md): Manage the security rules of
+        the instances
+
+3. **Orchestration with Heat**: manage infrastructure the DevOps way
+    - [**03a**](03_heat/03a_introduction_to_hot.md): Introduction to Heat Orchestration Templates
+    - ~~[**03b**](03_heat/03b_multi_tiers_deployment_template.md): Deploy a multi-tiers infrastructure
+      with Heat~~
 
 # Prerequisites
 ## For guided labs
@@ -129,4 +140,5 @@ For anyone else wanting to try this, you need:
 - a valid OVH Public Cloud project
 - a user on this project
 - an openrc file for this user
-- a terminal with the `openstack` CLI installed or use the terminal app integrated in the OVH manager.
+- a terminal with the `openstack` CLI installed or use the terminal app integrated in the OVH
+manager.

@@ -173,4 +173,4 @@ debian@restoredvm01:~$ ls
 thisismyvm.gif
 ```
 
-There is nothing more to do on snapshots so you can proceed to next [workshop](02b_delete_stop_reboot_instances.md).
+There is nothing more to do on snapshots so you can proceed to next [workshop](02b_stop_pause_delete_instances.md).
