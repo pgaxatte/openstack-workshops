@@ -56,10 +56,17 @@ This will output some information about the network, for instance:
 This will allow the creation of a subnet to define a range of IP that should be used.
 Here we will use a /24 IPv4 network which will provide 253 usable addresses:
 ```shell
-openstack subnet create --network mypriv01 --subnet-range 10.0.0.0/24 --allocation-pool start=10.0.0.2,end=10.0.0.254 --gateway none mysub01
+openstack subnet create \
+    --network mypriv01 \
+    --subnet-range 10.0.0.0/24 \
+    --allocation-pool start=10.0.0.2,end=10.0.0.254 \
+    --gateway none \
+    --dns-nameserver 0.0.0.0 \
+    mysub01
 ```
 
-> Note that since this a private network, there is no gateway.
+> Note that since this a private network, there is no gateway. Also it is mandatory to add a DNS
+> nameserver to 0.0.0.0 to prevent the DHCP server to send bad DNS in the DHCP reply.
 
 The result of this command will look like:
 ```
@@ -70,7 +77,7 @@ The result of this command will look like:
 | cidr              | 10.0.0.0/24                          |
 | created_at        | 2019-01-03T17:09:20Z                 |
 | description       |                                      |
-| dns_nameservers   |                                      |
+| dns_nameservers   | 0.0.0.0                              |
 | enable_dhcp       | True                                 |
 | gateway_ip        | None                                 |
 | host_routes       |                                      |
@@ -137,7 +144,8 @@ As you can see the 2 VM have a public and a private IPv4 address.
 
 Let's verify that the instances can see each other on the private network:
 ```shell
-$ ssh debian@51.XXX.YYY.ZZZ
+i With the public IP address of myvmpriv-1
+$ ssh debian@XXX.XXX.XXX.XXX
 [...]
 debian@myvmpriv-1:~$
 # Once on the instance let's install nmap to check the surrounding network
@@ -184,12 +192,12 @@ openstack server create \
 
 > Be careful to specify the id of the public (Ext-Net) network and not the private one.
 
-Now let's detach the private port of one of the other VM (`mvprivvm-1` in this example) and attach it to this 3rd VM.
+Now let's detach the private port of one of the other VM (`mvprivm-1` in this example) and attach it to this 3rd VM.
 
 To do that I'll need to find the id of the port that corresponds to the VM I want to take it from:
 ```shell
-# Look for the private IP address of mvprivvm-1
-openstack server show mvprivvm-1
+# Look for the private IP address of mvprivm-1
+openstack server show mvprivm-1
 ```
 
 Then list all the ports and find the id of the port corresponding to the IP:
@@ -197,7 +205,7 @@ Then list all the ports and find the id of the port corresponding to the IP:
 openstack port list
 ```
 
-Now remove the port from mvprivvm01:
+Now remove the port from mvprivm01:
 ```shell
 nova interface-detach myvmpriv-1 797b0390-...
 ```
@@ -229,7 +237,7 @@ debian@mythirdvm:~$
 debian@mythirdvm:~$ ip address list
 # You should see an interface ens6 down
 
-debian@mythirdvm:~$ dhclient ens6
+debian@mythirdvm:~$ sudo dhclient ens6
 
 debian@mythirdvm:~$ ip address list
 # It should now be up with the correct IP
@@ -237,7 +245,7 @@ debian@mythirdvm:~$ ip address list
 
 Here are some tasks for you:
 - :exclamation: **Task 2**: Connect to the untouched VM (`myvmpriv-2` in this example) and verify you can ping the IP of the port that has been moved.
-- :exclamation: **Task 3**: Detach the port from `mythirdvm` and re-attach it to `mvprivvm-1`.
+- :exclamation: **Task 3**: Detach the port from `mythirdvm` and re-attach it to `mvprivm-1`.
 
 ## Create a port
 There is still one instance that does not have a port on the private network (and it should be `mythirdvm` if you completed all the tasks).

@@ -82,6 +82,9 @@ openstack server pause myvm01
 You can check that the status of the instance is now `PAUSED` and you should not be able to ping it
 anymore:
 ```shell
+# First install ping on your bounce server
+$ apt-get install -y iputils-ping
+sudo 
 # With the IP of myvm01
 $ ping -W 1 -v XXX.XXX.XXX.XXX
 PING XXX.XXX.XXX.XXX (XXX.XXX.XXX.XXX) 56(84) bytes of data.

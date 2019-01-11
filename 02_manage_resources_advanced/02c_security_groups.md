@@ -81,7 +81,7 @@ debian@web01:~$ sudo a2enmod ssl
 debian@web01:~$ sudo a2ensite default-ssl
 
 # Restart apache
-debian@web01:~$ systemctl restart apache2
+debian@web01:~$ sudo systemctl restart apache2
 
 # Check it is listening on port 80 and 443
 debian@web01:~$ ss -ntl
