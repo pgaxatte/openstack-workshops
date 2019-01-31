@@ -30,7 +30,7 @@ Every object that can manipulated by Heat is called a resource. Heat provides re
 Resources are assembled in a stack which is defined in a template. Easy.
 
 ## Simple template with one resource
-To create a stack with only one instance, create a file named `one-vm.yaml` with the following
+To create a stack with only one instance, create a file named `one-vm.hot` with the following
 content:
 ```yaml
 heat_template_version: 2016-10-14
@@ -203,7 +203,7 @@ resources:
   my_instance:
     type: OS::Nova::Server
     properties:
-      key_name: { get_param: keypair }
+      ey_name: { get_param: keypair }
       image: { get_param: image }
       flavor: { get_param: flavor }
       networks:
@@ -223,7 +223,7 @@ apply the differences automagically where needed.
 
 First let's not be greedy and update only the template with the newly added outputs:
 ```shell
-$ openstack stack create \
+$ openstack stack update \
     --template one-vm.hot \
     --parameter keypair=mykey \
     --parameter image='Ubuntu 18.04' \
