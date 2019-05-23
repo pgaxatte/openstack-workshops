@@ -113,7 +113,7 @@ Which outputs:
 +--------------------------------------+----------+----------------------------------------------------------------------------+
 ```
 
-## Create a VM connected to the private network
+## Create two VM connected to the private network
 Now that we have a private network, we can use the following command to create 2 new VM in one shot with a connection to both networks:
 ```shell
 openstack server create \
@@ -144,7 +144,7 @@ As you can see the 2 VM have a public and a private IPv4 address.
 
 Let's verify that the instances can see each other on the private network:
 ```shell
-i With the public IP address of myvmpriv-1
+# With the public IP address of myvmpriv-1
 $ ssh debian@XXX.XXX.XXX.XXX
 [...]
 debian@myvmpriv-1:~$
@@ -176,80 +176,14 @@ It seems that 4 IP addresses have showed up. You can see the two private IP attr
 > Hint: take a look at the `ports` of your project: `openstack port list` and `openstack port show` should help you.
 
 # Hotplug ports
-## Move a port to another VM
-The same goes for the network ports as for the volumes: instead of imagining you unplug an external harddrive from one machine to plug it
+The same goes for the network ports as for the volumes: instead of unplugging an external hard-drive from one machine to plug it
 to another, just imagine you unplug a network card and its cable and plug it back into another machine.
 
-First let's create a 3rd VM that does not have a private network attachment:
-```shell
-openstack server create \
-    --image 'Debian 9' \
-    --flavor s1-2 \
-    --key-name mykey \
-    --nic net-id=581fad02-... \
-    mythirdvm
-```
-
-> Be careful to specify the id of the public (Ext-Net) network and not the private one.
-
-Now let's detach the private port of one of the other VM (`mvprivm-1` in this example) and attach it to this 3rd VM.
-
-To do that I'll need to find the id of the port that corresponds to the VM I want to take it from:
-```shell
-# Look for the private IP address of mvprivm-1
-openstack server show mvprivm-1
-```
-
-Then list all the ports and find the id of the port corresponding to the IP:
-```shell
-openstack port list
-```
-
-Now remove the port from mvprivm01:
-```shell
-nova interface-detach myvmpriv-1 797b0390-...
-```
-> This is using the nova command since the openstack command does not support it (yet)
-
-Check that the port is still there with a status DOWN:
-```shell
-openstack port list
-```
-
-We can finally re-attach the port to the 3rd VM:
-```shell
-nova interface-attach --port-id 797b0390-... mythirdvm
-```
-
-A quick look at the instance should confirm the port is connected:
-```shell
-openstack server show mythirdvm
-```
-
-But the IP would still not be reachable because the hotplugging of an interface does not work out of the box on the Debian 9 image.
-So you need to connect to `mythirdvm` and run a DHCP client on the new interface to get connectivity:
-```shell
-# With the IP address of mythirdvm
-$ ssh debian@XXX.XXX.XXX.XXX
-[...]
-debian@mythirdvm:~$
-
-debian@mythirdvm:~$ ip address list
-# You should see an interface ens6 down
-
-debian@mythirdvm:~$ sudo dhclient ens6
-
-debian@mythirdvm:~$ ip address list
-# It should now be up with the correct IP
-```
-
-Here are some tasks for you:
-- :exclamation: **Task 2**: Connect to the untouched VM (`myvmpriv-2` in this example) and verify you can ping the IP of the port that has been moved.
-- :exclamation: **Task 3**: Detach the port from `mythirdvm` and re-attach it to `mvprivm-1`.
+The advantage of creating a network port separately is that a port will be assigned an IP address on
+creation and will retain it as long as the port is not deleted.
 
 ## Create a port
-There is still one instance that does not have a port on the private network (and it should be `mythirdvm` if you completed all the tasks).
-So let's add a port to it with an IP address that we choose beforehand, e.g `10.0.0.100`.
+So let's add a port to it with an IP address that we choose beforehand: `10.0.0.100`.
 
 To create the port you will need the subnet and network id so first you should run:
 ```shell
@@ -263,9 +197,97 @@ openstack port create --fixed-ip subnet=cc7a966e-...,ip-address=10.0.0.100 --net
 
 The new port should appear as `DOWN` in the list returned by `openstack port list`.
 
+## Plug the port to a new VM
+First let's create two new VM that do not have a private network interface:
+```shell
+openstack server create \
+    --image 'Debian 9' \
+    --flavor s1-2 \
+    --key-name mykey \
+    --nic net-id=581fad02-... \
+    --min 2 \
+    --max 2 \
+    noprivvm
+```
+
+> Be careful to specify the id of the public (Ext-Net) network and not the private one.
+
+Let's plug the port we created to the `noprivvm-1` instance.
+
+First you need the ID of the port you just created. You can find it with the following command:
+```shell
+# To search and display as list:
+openstack port list --fixed-ip ip-address=10.0.0.100
+
+# Or just select the ID:
+openstack port list -f value -c ID --fixed-ip ip-address=10.0.0.100
+```
+
+Now, using this ID, we can add it to an instance:
+```shell
+openstack server add port noprivvm-1 c695b5d8-...
+```
+
+You can check that:
+- the `novmpriv-1` VM has now a second IP address on the private network:
+```shell
+openstack server show noprivvm-1
+```
+- the port is now `UP` and the `device_id` matches the ID of the VM:
+```shell
+openstack port show c695b5d8-...
+```
+
+## Move the port to another VM
+
+Now let's detach the private port of `novmpriv-1` and attach it to `novmpriv-2`.
+
+So first you need to remove the port from `novmpriv-1`:
+```shell
+openstack server remove port noprivvm-1 c695b5d8-...
+```
+
+Check that the port is still there with a status `DOWN`:
+```shell
+openstack port show c695b5d8-...
+```
+
+We can finally re-attach the port to `novmpriv-2`:
+```shell
+openstack server remove port noprivvm-2 c695b5d8-...
+```
+
+A quick look at the instance should confirm the port is connected:
+```shell
+openstack server show noprivvm-2
+```
+
+But the IP would still not be reachable because the hotplugging of an interface does not work out
+of the box on the Debian 9 image. So you need to connect to `novmpriv-2` and run a DHCP client on
+the new interface to get connectivity:
+```shell
+# With the public IP address of novmpriv-2
+$ ssh debian@XXX.XXX.XXX.XXX
+[...]
+debian@novmpriv-2:~$
+
+# List the interfaces of the VM
+# You should see an interface ens7 down (could be a different interface name)
+debian@novmpriv-2:~$ ip address list
+
+# Run a DHCP client on this interface
+debian@novmpriv-2:~$ sudo dhclient ens7
+
+# It should now be up with the correct IP
+debian@novmpriv-2:~$ ip address list
+```
+
 # You're up
 To finish this workshop, complete the following:
-- :exclamation: **Task 4**: Attach the new port to `mythirdvm`, bring it up via DHCP and test the connectivity to the other instances.
-- :exclamation: **Task 5**: Can you come up with scenarios where moving a port from a VM to another is essential?
+- :exclamation: **Task 2**: Connect to another VM with a private network (`myvmpriv-1` for instance)
+    and verify you can ping the IP of the port that has been moved.
+- :exclamation: **Task 3**: Create a new port but on the public network, attach it to a VM and make
+    sure you can ping it.
+- :exclamation: **Task 4**: Can you come up with scenarios where moving a port from a VM to another is essential?
 
 You finished the first workshop, you can now move on the [advanced resource management workshop](../02_manage_resources_advanced/02a_snapshots.md)
