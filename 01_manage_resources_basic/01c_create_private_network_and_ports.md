@@ -229,7 +229,7 @@ openstack server add port noprivvm-1 c695b5d8-...
 ```
 
 You can check that:
-- the `novmpriv-1` VM has now a second IP address on the private network:
+- the `noprivvm-1` VM has now a second IP address on the private network:
 ```shell
 openstack server show noprivvm-1
 ```
@@ -240,9 +240,9 @@ openstack port show c695b5d8-...
 
 ## Move the port to another VM
 
-Now let's detach the private port of `novmpriv-1` and attach it to `novmpriv-2`.
+Now let's detach the private port of `noprivvm-1` and attach it to `noprivvm-2`.
 
-So first you need to remove the port from `novmpriv-1`:
+So first you need to remove the port from `noprivvm-1`:
 ```shell
 openstack server remove port noprivvm-1 c695b5d8-...
 ```
@@ -252,7 +252,7 @@ Check that the port is still there with a status `DOWN`:
 openstack port show c695b5d8-...
 ```
 
-We can finally re-attach the port to `novmpriv-2`:
+We can finally re-attach the port to `noprivvm-2`:
 ```shell
 openstack server add port noprivvm-2 c695b5d8-...
 ```
@@ -263,23 +263,23 @@ openstack server show noprivvm-2
 ```
 
 But the IP would still not be reachable because the hotplugging of an interface does not work out
-of the box on the Debian 9 image. So you need to connect to `novmpriv-2` and run a DHCP client on
+of the box on the Debian 9 image. So you need to connect to `noprivvm-2` and run a DHCP client on
 the new interface to get connectivity:
 ```shell
-# With the public IP address of novmpriv-2
+# With the public IP address of noprivvm-2
 $ ssh debian@XXX.XXX.XXX.XXX
 [...]
-debian@novmpriv-2:~$
+debian@noprivvm-2:~$
 
 # List the interfaces of the VM
 # You should see an interface ens7 down (could be a different interface name)
-debian@novmpriv-2:~$ ip address list
+debian@noprivvm-2:~$ ip address list
 
 # Run a DHCP client on this interface
-debian@novmpriv-2:~$ sudo dhclient ens7
+debian@noprivvm-2:~$ sudo dhclient ens7
 
 # It should now be up with the correct IP
-debian@novmpriv-2:~$ ip address list
+debian@noprivvm-2:~$ ip address list
 ```
 
 # You're up
