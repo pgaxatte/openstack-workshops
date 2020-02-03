@@ -47,3 +47,9 @@ resource "openstack_compute_instance_v2" "node" {
     ignore_changes = [user_data, image_id, key_pair]
   }
 }
+
+output keypair_priv {
+  description = "SSH private key"
+  sensitive   = true
+  value       = tls_private_key.private_key.private_key_pem
+}
