@@ -89,6 +89,11 @@ openstack flavor show 3c83dfbd-abdb-43d0-b041-3ac44009c2f7
 ```
 
 ## Use an SSH keypair
+First you need to generate your own SSH key on the lab session:
+```shell
+ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
+```
+
 There is no SSH keypair available by default so we need to add one with the following command:
 ```shell
 openstack keypair create --public-key /root/.ssh/id_rsa.pub mykey
