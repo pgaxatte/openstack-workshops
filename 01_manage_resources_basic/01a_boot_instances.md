@@ -96,7 +96,7 @@ ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
 
 There is no SSH keypair available by default so we need to add one with the following command:
 ```shell
-openstack keypair create --public-key /root/.ssh/id_rsa.pub mykey
+openstack keypair create --public-key ~/.ssh/id_rsa.pub mykey
 ```
 
 You can list the available keypairs and see the detail of a keypair with the following commands:
