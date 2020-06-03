@@ -25,44 +25,24 @@ The workshops are organized as follows:
 # Prerequisites
 ## For guided labs
 Before beginning the workshops, the following elements should have been communicated to you:
-- the IP address of the bounce server
-- the password of the bounce user
-- the ID of the container to use
+- the address of the lab server
+- the password of the lab user (named `student`)
 
 ### Connect to the container
 With this information you can connect to the bounce server:
 ```shell
-ssh bounce@XXX.XXX.XXX.XXX
+ssh student@XXX.XXX.XXX.XXX
 ```
 
-The banner will ask to enter an ID:
-```shell
-bounce@XXX.XXX.XXX.XXX's password:
-[...]
-What is your ID? (desktop id or firstname.name)
-<enter ID>
-Connecting to ID's environement
-root@XXXXXX:~#
-```
+Follow the instructions by providing a username of your choice.
 
 You are now logged in.
 
-### Install the openstack client
-Once logged in you need to install the `openstack` command-line interface:
+### Load the credentials
+Load the credentials to access your cloud project
 ```shell
-apt-get install python-openstackclient
-```
-
-Now let's add the completion for `bash`:
-```shell
-openstack complete > /etc/bash_completion.d/osc.bash_completion
-source /etc/bash.bashrc
-```
-
-Finally, check and load the credentials of the OpenStack project that was prepared for you:
-```shell
-cat credentials
-source credentials
+cat openrc
+source openrc
 ```
 
 Check that you have sufficient quotas to complete the workshops:
