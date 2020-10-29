@@ -2,29 +2,17 @@ Heat is an orchestrator allowing the building of an infrastructure with a YAML f
 Heat Orchestration Template) submitted by the user. This workshop will guide through the basic
 concepts of Heat and the writing of simple templates.
 
-# Preparation
-## Software dependencies
-By default the heat client is not installed with the `openstack` client. So you need to install it
-manually.
-```shell
-apt-get install -y python-heatclient
-```
-
-You will surely need a text editor to create and edit the templates. If you go through this workshop
-from a bounce server, do not hesitate to `apt-get install` your favorite terminal based text editor
-otherwise you can use `pico` which is fairly simple.
-
-## YAML format
+# YAML format
 If you are already familiar with the YAML format, skip this paragraph.
 
 Otherwise, please consider reading an introduction to YAML. Some good resources include:
 - http://sweetohm.net/article/introduction-yaml.en.html
 - https://learnxinyminutes.com/docs/yaml/
 
-Or just pick it up as we go, but this guide will assume you understand YAML at least a basic level.
+Or just pick it up as we go, but this guide will assume you understand YAML at least at a basic level.
 
 # Create a stack
-Every object that can manipulated by Heat is called a resource. Heat provides resources for probably
+Every object that can be manipulated by Heat is called a resource. Heat provides resources for probably
 (sorry did not thoroughly check) all the objects the OpenStack API can handle.
 
 Resources are assembled in a stack which is defined in a template. Easy.
